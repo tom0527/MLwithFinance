@@ -31,4 +31,4 @@ def getrate():
         rateid[i] = result["query"]["results"]["rate"]["id"]
         created[i] = result["query"]["created"]
 
-    return (ask,bid,rate,rateid,created)
+    return (currlist,ask,bid,rate,rateid,created)

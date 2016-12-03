@@ -12,7 +12,7 @@ def mainjob():
     ask = list(map(float, ask))
     bid = list(map(float, bid))
     rate = list(map(float, rate))
-    print(ask[0]+1)
+
     threading.Timer(interval,mainjob).start()
 
 mainjob()

@@ -3,8 +3,8 @@ import numpy as np
 import scipy
 
 currlist = ["USDJPY","USDEUR","USDGBP","EURJPY","EURGBP","GBPJPY"]
-sample_num = 100
-max_sample_range=300
+sample_num = 20
+max_sample_range=600
 min_later = 5
 
 
@@ -29,15 +29,16 @@ dataset = np.squeeze(dataset)
 
 labels = np.zeros(max_sample_range,dtype=np.int)
 for i in sample_range:
-    if dataset1[sample_num+i+min_later,1] < dataset1[sample_num+i,0]:
+    if dataset1[sample_num+i+min_later,2] > dataset1[sample_num+i,2]:
         labels[i] = 1
     else:
         labels[i] = 0
 clf = tree.DecisionTreeClassifier()
 clf = clf.fit(dataset, labels)
 
-maxeval = 350
-predict = []
+maxeval = 700
+
+predict = np.zeros(maxeval,dtype=np.int)
 
 for i in range(0,maxeval):
     sample = []
@@ -50,14 +51,16 @@ for i in range(0,maxeval):
     sample = sample.reshape(1,-1)
     #sample = np.squeeze(sample)
     result = clf.predict(sample)
-    predict.append(result[0])
+    predict[i] = result[0]
 
 labels = np.zeros(maxeval,dtype=np.int)
 for i in range(0,maxeval):
-    if dataset1[sample_num+i+min_later,1] < dataset1[sample_num+i,0]:
+    if dataset1[sample_num+i+min_later,2] > dataset1[sample_num+i,2]:
         labels[i] = 1
     else:
         labels[i] = 0
 
-predict = list(map(int, predict))
+labels = labels[max_sample_range:]
+predict= predict[max_sample_range:]
 print(np.count_nonzero(predict-labels))
+print(labels-predict)
