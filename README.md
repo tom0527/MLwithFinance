@@ -20,8 +20,8 @@ This project is python3 based.
 
 No GUI support.
 
-get data from yahoo takes data from yahoo
-main.py thingy just outputs it periodically with given interval (in seconds).
+`getdatafromyahoo.py` takes data from yahoo  
+`main.py` thingy just outputs it periodically with given interval (in seconds).
 
 ## To install additional python packages:
 first, install pip (it's a package manager for python).    
