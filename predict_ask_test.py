@@ -1,10 +1,11 @@
 from sklearn import tree
 import numpy as np
 import scipy
+import matplotlib.pyplot as mpl
 
 currlist = ["USDJPY","USDEUR","USDGBP","EURJPY","EURGBP","GBPJPY"]
-sample_num = 100
-max_sample_range=300
+sample_num = 60
+max_sample_range=400
 min_later = 5
 
 
@@ -26,18 +27,37 @@ for i in sample_range:
     dataset.append([sample])
 dataset = np.squeeze(dataset)
 
-
 labels = np.zeros(max_sample_range,dtype=np.int)
 for i in sample_range:
-    if dataset1[sample_num+i+min_later,0] < dataset1[sample_num+i,1]:
-        labels[i] = 1
-    else:
-        labels[i] = 0
+    future_sell_val = dataset1[sample_num+i+min_later,0]
+    current_ask_val = dataset1[sample_num+i,1]
+    percent = float ((future_sell_val-current_ask_val)/current_ask_val)*100.
+    if percent==0:
+        labels[i] = 5
+    elif percent > 0:
+        if percent < 0.025:
+            labels[i] = 6
+        elif percent < 0.05:
+            labels[i] = 7
+        elif percent < 0.075:
+            labels[i] = 8
+        else:
+            labels[i] = 9
+    else :
+        if percent > -0.025:
+            labels[i] = 4
+        elif percent > - 0.05:
+            labels[i] = 3
+        elif percent > -0.075:
+            labels[i] = 2
+        else:
+            labels[i] = 1
+
 clf = tree.DecisionTreeClassifier()
 clf = clf.fit(dataset, labels)
 
-maxeval = 350
-predict = []
+maxeval = 500
+predict = np.zeros(maxeval,dtype=np.int)
 
 for i in range(0,maxeval):
     sample = []
@@ -50,14 +70,40 @@ for i in range(0,maxeval):
     sample = sample.reshape(1,-1)
     #sample = np.squeeze(sample)
     result = clf.predict(sample)
-    predict.append(result[0])
+    predict[i]=result[0]
 
 labels = np.zeros(maxeval,dtype=np.int)
 for i in range(0,maxeval):
-    if dataset1[sample_num+i+min_later,0] < dataset1[sample_num+i,1]:
-        labels[i] = 1
-    else:
-        labels[i] = 0
+    future_sell_val = dataset1[sample_num+i+min_later,0]
+    current_ask_val = dataset1[sample_num+i,1]
+    percent = float ((future_sell_val-current_ask_val)/current_ask_val)*100.
+    if percent==0:
+        labels[i] = 5
+    elif percent > 0:
+        if percent < 0.025:
+            labels[i] = 6
+        elif percent < 0.05:
+            labels[i] = 7
+        elif percent < 0.075:
+            labels[i] = 8
+        else:
+            labels[i] = 9
+    else :
+        if percent > -0.025:
+            labels[i] = 4
+        elif percent > -0.05:
+            labels[i] = 3
+        elif percent > -0.075:
+            labels[i] = 2
+        else:
+            labels[i] = 1
 
-predict = list(map(int, predict))
-print(np.count_nonzero(predict-labels))
+#predict = np.array(map(int, predict))
+
+labels = (labels-5)*0.025
+predict = (predict-5)*0.025
+
+print(np.std(predict-labels))
+#mpl.plot(np.arange(0,len(predict)),labels,'r*')
+#mpl.plot(np.arange(0,len(predict)),predict,'ko')
+#mpl.show()
