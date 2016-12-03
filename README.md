@@ -25,6 +25,6 @@ No GUI support.
 
 ## To install additional python packages:
 first, install pip (it's a package manager for python).    
-`sudo apt-get install python-pip`  
+`sudo apt-get install python3-pip`  
 Then  
-`[sudo] pip install packagename`  
+`[sudo] pip3 install packagename`  
